@@ -1,4 +1,4 @@
-package com.uch.finalproject.model;
+package com.uch.finalproject.model.dto;
 
 import lombok.Data;
 

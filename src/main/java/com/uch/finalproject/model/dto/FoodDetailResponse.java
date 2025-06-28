@@ -1,4 +1,6 @@
-package com.uch.finalproject.model;
+package com.uch.finalproject.model.dto;
+
+import com.uch.finalproject.model.entity.FoodDetailEntity;
 
 import lombok.Data;
 

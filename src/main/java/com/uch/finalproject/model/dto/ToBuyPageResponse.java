@@ -1,9 +1,12 @@
-package com.uch.finalproject.model;
+package com.uch.finalproject.model.dto;
 
 
 import lombok.Data;
 
 import java.util.ArrayList;
+
+import com.uch.finalproject.model.entity.ToBuyEntity;
+import com.uch.finalproject.model.entity.ToBuyPageEntity;
 
 @Data
 public class ToBuyPageResponse extends BaseResponse {

@@ -1,4 +1,4 @@
-package com.uch.finalproject.model;
+package com.uch.finalproject.model.entity;
 
 import java.sql.Date;
 import java.util.ArrayList;
