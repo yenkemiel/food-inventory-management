@@ -1,6 +1,9 @@
 package com.uch.finalproject.controller;
 
 import com.uch.finalproject.model.*;
+import com.uch.finalproject.model.dto.ToBuyPageResponse;
+import com.uch.finalproject.model.entity.ToBuyEntity;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -15,9 +18,15 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import com.uch.finalproject.util.DatabaseUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 @RestController
 public class ToBuyController {
+
+    @Autowired
+    private DatabaseUtil databaseUtil;
 
     /* 獲取採購食物資料列表 */
     @RequestMapping(value = "/tobuy", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -73,8 +82,7 @@ public class ToBuyController {
         PreparedStatement stmt = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/foods?user=root&password=0000");
+            conn = databaseUtil.getConnection();
 
             stmt = conn.prepareStatement("UPDATE food_tobuy " +
                     "SET tobuy_date = ? " +
@@ -92,6 +100,8 @@ public class ToBuyController {
             return new ToBuyPageResponse(e.getErrorCode(), e.getMessage(),null, 0);
         }catch(ClassNotFoundException e) {
             return new ToBuyPageResponse(3,"資料更新失敗",null, 0);
+        }finally {
+            databaseUtil.closeResources(null, stmt, conn);
         }
     }
     /* 刪除採購食物資料 */
@@ -103,8 +113,7 @@ public class ToBuyController {
         PreparedStatement stmt = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/foods?user=root&password=0000");
+            conn = databaseUtil.getConnection();
 
             stmt = conn.prepareStatement("DELETE FROM food_tobuy WHERE tobuy_id = ?");
             stmt.setInt(1, data.getTobuyId());
@@ -117,6 +126,8 @@ public class ToBuyController {
             return new ToBuyPageResponse(e.getErrorCode(), e.getMessage(),null, 0);
         }catch(ClassNotFoundException e) {
             return new ToBuyPageResponse(4,"資料刪除失敗",null, 0);
+        }finally {
+            databaseUtil.closeResources(null, stmt, conn);
         }
     }
 
@@ -131,9 +142,7 @@ public class ToBuyController {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/foods?user=root&password=0000");
+            conn = databaseUtil.getConnection();
 
             String sortDirection = (tobuyDateSortMode == 1) ? "DESC" : "ASC";
             String queryString = "SELECT ft.tobuy_id, name, tobuy_date FROM food_tobuy ft JOIN food_detail fd ON ft.food_id = fd.food_id JOIN category c ON fd.category_no = c.category_no " +
@@ -167,6 +176,8 @@ public class ToBuyController {
             return new ToBuyPageResponse(e.getErrorCode(), e.getMessage(), null, 0);
         } catch(ClassNotFoundException e) {
             return new ToBuyPageResponse(5, "資料搜尋成功", null, 0);
+        }finally {
+            databaseUtil.closeResources(rs, stmt, conn);
         }
     }
 
@@ -256,8 +267,7 @@ public class ToBuyController {
         ResultSet rs = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/foods?user=root&password=0000");
+            conn = databaseUtil.getConnection();
             stmt = conn.createStatement();
 
             String sortDirection = (tobuyDateSortMode == 1) ? "DESC" : "ASC";
@@ -287,6 +297,8 @@ public class ToBuyController {
             return new ToBuyPageResponse(e.getErrorCode(), e.getMessage(), null, 0);
         } catch(ClassNotFoundException e) {
             return new ToBuyPageResponse(1, "無法註冊驅動程式", null, 0);
+        }finally {
+            databaseUtil.closeResources(rs, stmt, conn);
         }
     }
 }

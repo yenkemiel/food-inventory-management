@@ -11,11 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.uch.finalproject.model.FoodDetailEntity;
-import com.uch.finalproject.model.FoodDetailResponse;
+import com.uch.finalproject.model.dto.FoodDetailResponse;
+import com.uch.finalproject.model.entity.FoodDetailEntity;
+
+import com.uch.finalproject.util.DatabaseUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @RestController
 public class FoodDetailController {
+    
+    @Autowired
+    private DatabaseUtil databaseUtil;
+
     @RequestMapping(value = "/foodDetail", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public FoodDetailResponse foodDetail(int id) {
         return getFoodDetail(id);
@@ -29,8 +36,7 @@ public class FoodDetailController {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/foods?user=root&password=0000");
-            stmt = conn.createStatement();
+            conn = databaseUtil.getConnection();
 
             // ToDo: 改query:  select name, category, buy_date, exp_date, quantity  from foods f join food_detail fd where f.food_id = fd.id;
                 rs = stmt.executeQuery("select food_id, name, category, calories,protein, saturated_fat, total_carbohydrates, dietary_fiber from food_detail fd join category c on fd.category_no=c.category_no where food_id =  " + id);                
@@ -58,6 +64,8 @@ public class FoodDetailController {
             return new FoodDetailResponse(e.getErrorCode(), e.getMessage(), null);
         } catch(ClassNotFoundException e) {
             return new FoodDetailResponse(1, "無法註冊驅動程式", null);
+        }finally {
+            databaseUtil.closeResources(rs, stmt, conn);
         }
     }
 }

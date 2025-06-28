@@ -12,12 +12,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.uch.finalproject.model.LoginResponse;
+import com.uch.finalproject.model.dto.LoginResponse;
 
 import jakarta.servlet.http.HttpSession;
 
+import com.uch.finalproject.util.DatabaseUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+
 @RestController
 public class LoginController {
+
+    @Autowired
+    private DatabaseUtil databaseUtil;
+
     @RequestMapping(value = "/login", method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     public LoginResponse Login(String username, String password, HttpSession httpSession) {
@@ -39,11 +46,7 @@ public class LoginController {
 
         // 註冊mySQL資料庫驅動程式
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            // 連線資料庫
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/foods?" +
-                                               "user=root&password=0000");
+            conn = databaseUtil.getConnection();
 
             // 取得Statement物件
             stmt = conn.createStatement();
@@ -79,11 +82,6 @@ public class LoginController {
             rs.next();
             c = rs.getInt("c"); // 查詢到的資料筆數
 
-            // 把資料庫相關資源釋放
-            rs.close();
-            stmt.close();
-            conn.close();
-
             // 密碼錯誤
             if(c == 0) {
                 return new LoginResponse(3, "密碼錯誤");
@@ -98,6 +96,8 @@ public class LoginController {
         } catch (SQLException e) {
             // SQL操作錯誤(代碼2)
             return new LoginResponse(e.getErrorCode(), e.getMessage());
+        }finally {
+            databaseUtil.closeResources(rs, stmt, conn);
         }
     }
 }

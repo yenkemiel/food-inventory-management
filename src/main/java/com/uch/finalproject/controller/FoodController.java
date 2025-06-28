@@ -12,6 +12,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import com.uch.finalproject.model.*;
+import com.uch.finalproject.model.dto.FoodPageResponse;
+import com.uch.finalproject.model.entity.FoodEntity;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -20,8 +23,14 @@ import org.apache.commons.csv.CSVPrinter;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import com.uch.finalproject.util.DatabaseUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+
 @RestController
 public class FoodController {
+
+    @Autowired
+    private DatabaseUtil databaseUtil; 
 
     /* 獲取食物倉庫資料列表 */
     @RequestMapping(value = "/foods", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -38,8 +47,7 @@ public class FoodController {
         PreparedStatement stmt = null;
 
         try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/foods?user=root&password=0000");
+            conn = databaseUtil.getConnection();
 
             stmt = conn.prepareStatement("SELECT COUNT(*) FROM food_detail WHERE name = ?");
             stmt.setString(1, data.getName());
@@ -78,6 +86,8 @@ public class FoodController {
             return new FoodPageResponse(e.getErrorCode(), e.getMessage(),null,0);
         }catch(ClassNotFoundException e) {
             return new FoodPageResponse(2,"資料新增失敗",null,0);
+        }finally {
+            databaseUtil.closeResources(null, stmt, conn);
         }
     }
 
@@ -90,8 +100,7 @@ public class FoodController {
         PreparedStatement stmt = null;
 
         try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/foods?user=root&password=0000");
+            conn = databaseUtil.getConnection();
 
             stmt = conn.prepareStatement("UPDATE food_stock " +
                     "SET buy_date = ?, exp_date = ?, quantity = ? " +
@@ -110,6 +119,8 @@ public class FoodController {
             return new FoodPageResponse(e.getErrorCode(), e.getMessage(),null,0);
         }catch(ClassNotFoundException e) {
             return new FoodPageResponse(3,"資料更新失敗",null,0);
+        }finally {
+            databaseUtil.closeResources(null, stmt, conn);
         }
     }
 
@@ -136,6 +147,8 @@ public class FoodController {
             return new FoodPageResponse(e.getErrorCode(), e.getMessage(),null,0);
         }catch(ClassNotFoundException e) {
             return new FoodPageResponse(4,"資料刪除失敗",null,0);
+        }finally {
+            databaseUtil.closeResources(null, stmt, conn);
         }
     }
 
@@ -190,6 +203,8 @@ public class FoodController {
             return new FoodPageResponse(5, "資料搜尋失敗", null, 0);
         } catch (SQLException e) {
             return new FoodPageResponse(e.getErrorCode(), e.getMessage(), null, 0);
+        }finally {
+            databaseUtil.closeResources(rs, stmt, conn);
         }
     }
 
@@ -246,6 +261,8 @@ public class FoodController {
             return new FoodPageResponse(6, "過期食物資料載入失敗", null, 0);
         } catch (SQLException e) {
             return new FoodPageResponse(e.getErrorCode(), e.getMessage(), null, 0);
+        }finally {
+            databaseUtil.closeResources(rs, stmt, conn);
         }
     }
 
@@ -279,8 +296,7 @@ public class FoodController {
         ResultSet rs = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/foods?user=root&password=0000");
+            conn = databaseUtil.getConnection();
             stmt = conn.createStatement();
 
             String sortDirection = (expDateSortMode == 1) ? "DESC" : "ASC";
@@ -312,6 +328,9 @@ public class FoodController {
             return new FoodPageResponse(e.getErrorCode(), e.getMessage(), null,0);
         } catch(ClassNotFoundException e) {
             return new FoodPageResponse(1, "無法註冊驅動程式", null,0);
+        } finally {
+            // ✅ 新增這個 finally 區塊
+            databaseUtil.closeResources(rs, stmt, conn);
         }
     }
 }
