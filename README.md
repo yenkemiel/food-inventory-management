@@ -1,3 +1,4 @@
+[TOC]
 # 食材庫存管理系統
 
 >**本專案為應徵2025國泰資訊人才培訓計畫補件之作品整理專案。**
@@ -68,6 +69,10 @@ mvn spring-boot:run
 ```
 5. **測試API**
 打開瀏覽器訪問：http://localhost:8080/foods?page=1&count=10&expDateSortMode=0
+
+### 測試登入
+- 帳號：`andy`
+- 密碼：`1234`
 
 ## 專案架構
 ```
