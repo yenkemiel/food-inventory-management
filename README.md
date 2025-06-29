@@ -29,15 +29,16 @@
 
 ## 技術棧
 
-| 分類       | 技術                         |
-| ---------- | ---------------------------- |
-| 後端框架   | Spring Boot 3.1.1            |
-| 程式語言   | Java 17                      |
-| 資料庫     | MySQL 8.0                    |
-| 資料存取   | JDBC               |
-| 建構工具   | Maven                        |
-| 容器化     | Docker & Docker Compose      |
-| 其他       | Lombok   |
+| 分類     | 技術                    |
+| -------- | ----------------------- |
+| 後端框架 | Spring Boot 3.1.1       |
+| 程式語言 | Java 17                 |
+| 資料庫   | MySQL 8.0               |
+| 資料存取 | JDBC                    |
+| 建構工具 | Maven                   |
+| 容器化   | Docker & Docker Compose |
+| 前端技術 |  HTML, CSS, JavaScript   |
+| 其他     | Lombok                  |
 
 
 ## 快速開始
