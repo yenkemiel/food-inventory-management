@@ -204,7 +204,26 @@ src
 + }
 ```
 
-#### 4. 新增完整的文檔
+#### 4. 容器化部署
+* **改善前：** 需要手動安裝和配置MySQL環境  
+* **改善後：** 使用Docker Compose統一環境管理
+
+```diff
++ version: '3.8'
++ services:
++   mysql:
++     image: mysql:8.0
++     container_name: food-mysql
++     environment:
++       MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
++       MYSQL_DATABASE: foods
++     ports:
++       - "3306:3306"
++     volumes:
++       - mysql-data:/var/lib/mysql
+```
+
+#### 5. 新增完整的文檔
 提供詳細的README和API使用說明，便於其他開發者快速上手。
 
 
