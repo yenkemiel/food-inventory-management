@@ -23,6 +23,7 @@
 ### 營養資訊頁面
 ![nutrition-info](images/nutrition-info.png)
 ### 採購清單頁面
+排序邏輯是以採購日期為主，讓使用者能優先處理急需採購的項目。
 ![shopping-list](images/shopping-list.png)
 
 
