@@ -173,7 +173,7 @@ src
 
 #### 1. 資料庫連接重構
 >**改善前：** 在每個Controller重複寫資料庫連接代碼
-**改善後：** 統一使用DatabaseUtil工具類
+>**改善後：** 統一使用DatabaseUtil工具類
 ```diff
 - Class.forName("com.mysql.cj.jdbc.Driver");
 - conn = DriverManager.getConnection("jdbc:mysql://localhost/foods?user=root&password=0000");
@@ -183,8 +183,8 @@ src
 ```
 
 #### 2. 資源管理優化
->**改善前： 手動關閉資源，容易遺漏
-改善後： 統一在finally區塊處理，確保資源正確釋放**
+>**改善前：** 手動關閉資源，容易遺漏
+>**改善後：** 統一在finally區塊處理，確保資源正確釋放
 ```diff
 + } finally {
 +     databaseUtil.closeResources(rs, stmt, conn);
@@ -192,8 +192,8 @@ src
 ```
 #### 3. 輸入驗證強化
 
->**改善前： 沒有輸入驗證，直接處理資料
-改善後： 加入完整的輸入驗證機制**
+>**改善前：** 沒有輸入驗證，直接處理資料
+>**改善後：** 加入完整的輸入驗證機制
 ```diff
 + if (data == null) {
 +     return new FoodPageResponse(400, "請求資料不能為空", null, 0);
