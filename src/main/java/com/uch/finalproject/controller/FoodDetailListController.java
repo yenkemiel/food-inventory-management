@@ -42,6 +42,27 @@ public class FoodDetailListController {
             consumes = MediaType.APPLICATION_JSON_VALUE,  // 傳入的資料格式
             produces = MediaType.APPLICATION_JSON_VALUE)
     public FoodDetailListPageResponse addfoodDetail(@RequestBody FoodDetailEntity data){
+
+        if (data == null) {
+            return new FoodDetailListPageResponse(400, "請求資料不能為空", null, 0);
+        }
+        
+        if (data.getName() == null || data.getName().trim().isEmpty()) {
+            return new FoodDetailListPageResponse(400, "食物名稱不能為空", null, 0);
+        }
+        
+        if (data.getCategory() == null || data.getCategory().trim().isEmpty()) {
+            return new FoodDetailListPageResponse(400, "食物類別不能為空", null, 0);
+        }
+        
+        if (data.getCalories() < 0) {
+            return new FoodDetailListPageResponse(400, "熱量不能為負數", null, 0);
+        }
+        
+        if (data.getProtein() < 0) {
+            return new FoodDetailListPageResponse(400, "蛋白質不能為負數", null, 0);
+        }
+
         Connection conn = null;
         PreparedStatement stmt = null;
 

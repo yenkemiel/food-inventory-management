@@ -43,6 +43,27 @@ public class FoodController {
             consumes = MediaType.APPLICATION_JSON_VALUE,  // 傳入的資料格式
             produces = MediaType.APPLICATION_JSON_VALUE)
     public FoodPageResponse addFood(@RequestBody FoodEntity data) {
+
+        if (data == null) {
+            return new FoodPageResponse(400, "請求資料不能為空", null, 0);
+        }
+        
+        if (data.getName() == null || data.getName().trim().isEmpty()) {
+            return new FoodPageResponse(400, "食物名稱不能為空", null, 0);
+        }
+        
+        if (data.getCategory() == null || data.getCategory().trim().isEmpty()) {
+            return new FoodPageResponse(400, "食物類別不能為空", null, 0);
+        }
+        
+        if (data.getQuantity() <= 0) {
+            return new FoodPageResponse(400, "數量必須大於0", null, 0);
+        }
+        
+        if (data.getExpDate() == null) {
+            return new FoodPageResponse(400, "到期日期不能為空", null, 0);
+        }
+
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -96,6 +117,23 @@ public class FoodController {
             consumes = MediaType.APPLICATION_JSON_VALUE,  // 傳入的資料格式
             produces = MediaType.APPLICATION_JSON_VALUE)
     public FoodPageResponse updateFood(@RequestBody FoodEntity data) {
+
+        if (data == null) {
+            return new FoodPageResponse(400, "請求資料不能為空", null, 0);
+        }
+        
+        if (data.getStockId() <= 0) {
+            return new FoodPageResponse(400, "庫存ID無效", null, 0);
+        }
+        
+        if (data.getQuantity() <= 0) {
+            return new FoodPageResponse(400, "數量必須大於0", null, 0);
+        }
+        
+        if (data.getExpDate() == null) {
+            return new FoodPageResponse(400, "到期日期不能為空", null, 0);
+        }
+
         Connection conn = null;
         PreparedStatement stmt = null;
 
